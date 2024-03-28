@@ -1,0 +1,112 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <ctime>
+
+using namespace std;
+
+class Reservation {
+private:
+    string name;
+    string timeSlot;
+
+public:
+    Reservation(string n, string ts) : name(n), timeSlot(ts) {}
+
+    string getName() const {
+        return name;
+    }
+
+    string getTimeSlot() const {
+        return timeSlot;
+    }
+};
+
+class Restaurant {
+private:
+    vector<string> availableTimeSlots;
+    vector<Reservation> reservations;
+
+public:
+    void initializeTimeSlots() {
+        // Initialize available time slots
+        // Example: 12:00 PM, 12:30 PM, 1:00 PM, ...
+        availableTimeSlots.push_back("12:00 PM");
+        availableTimeSlots.push_back("12:30 PM");
+        availableTimeSlots.push_back("1:00 PM");
+        availableTimeSlots.push_back("1:30 PM");
+        availableTimeSlots.push_back("2:00 PM");
+        availableTimeSlots.push_back("2:30 PM");
+        availableTimeSlots.push_back("3:00 PM");
+        availableTimeSlots.push_back("3:30 PM");
+        availableTimeSlots.push_back("4:00 PM");
+        availableTimeSlots.push_back("4:30 PM");
+        availableTimeSlots.push_back("5:00 PM");
+    }
+
+    void displayAvailableTimeSlots() {
+        cout << "Available Time Slots:" << endl;
+        for (const auto& slot : availableTimeSlots) {
+            cout << slot << endl;
+        }
+    }
+
+    bool makeReservation(string name, string timeSlot) {
+        // Check if the time slot is available
+        for (const auto& reservation : reservations) {
+            if (reservation.getTimeSlot() == timeSlot) {
+                return false; // Time slot already reserved
+            }
+        }
+
+        // Make the reservation
+        reservations.push_back(Reservation(name, timeSlot));
+        // Remove the reserved time slot from available time slots
+        for (auto it = availableTimeSlots.begin(); it != availableTimeSlots.end(); ++it) {
+            if (*it == timeSlot) {
+                availableTimeSlots.erase(it);
+                break;
+            }
+        }
+        return true;
+    }
+
+    void displayReservations() {
+        cout << "Reservations:" << endl;
+        for (const auto& reservation : reservations) {
+            cout << "Name: " << reservation.getName() << ", Time Slot: " << reservation.getTimeSlot() << endl;
+        }
+    }
+};
+
+int main() {
+    // Initialize Restaurant object
+    Restaurant restaurant;
+
+    // Initialize available time slots
+    restaurant.initializeTimeSlots();
+
+    // Display available time slots
+    restaurant.displayAvailableTimeSlots();
+
+    // Get user input for reservation
+    string name, timeSlot;
+    cout << "Enter your name: ";
+    getline(cin, name);
+    cout << "Enter preferred time slot: ";
+    getline(cin, timeSlot);
+
+    // Customer makes a reservation
+    bool success = restaurant.makeReservation(name, timeSlot);
+
+    if (success) {
+        cout << "Reservation successful!" << endl;
+    } else {
+        cout << "Sorry, the selected time slot is not available." << endl;
+    }
+
+    // Display all reservations
+    restaurant.displayReservations();
+
+    return 0;
+}
